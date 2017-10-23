@@ -12,6 +12,16 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+
+    <style>
+        body { padding-bottom: 100px; }
+        .level { display: flex; align-items: center; }
+        .flex { flex: 1; }
+        .mr-1 { margin-right: 1em; }
+        .ml-a { margin-left: auto; }
+        [v-cloak] { display: none; }
+    </style>
 </head>
 <body>
     <div id="app">
@@ -74,9 +84,18 @@
         @yield('content')
 
         <example></example> 
+
+        <flash message="{{ session('flash') }}"></flash>
     </div>
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
+    <script>
+         function getFlash() {
+            axios.get('/getFlash')
+              .then((response) => flash(response.data));
+         }
+    </script>
+
 </body>
 </html>

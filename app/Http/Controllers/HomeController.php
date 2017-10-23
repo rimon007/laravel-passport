@@ -23,6 +23,7 @@ class HomeController extends Controller
      */
     public function index()
     {
+        session()->flash('flash', 'Your thread has been published!');
         return view('home');
     }
 }

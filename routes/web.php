@@ -12,22 +12,30 @@
 */
 use Carbon\Carbon;
 Route::get('/', function () {
+	//session()->flash('flash', 'success');
     return view('welcome');
 });
 
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+Route::get('getFlash', function() {
 
+	return 'status ok!';
+});
 Route::get('datetime', function() {
 	Carbon::setWeekStartsAt(Carbon::SATURDAY);
 	Carbon::setWeekEndsAt(Carbon::FRIDAY);
-	$saturday = Carbon::now()->startOfWeek();
-	$friday = Carbon::now()->endOfWeek();
-	$dbblDatas = dbblServerDataSet();
+	$startOfWeek = Carbon::now()->startOfWeek();
+	$endOfWeek = Carbon::now()->endOfWeek();
+	//date('l', strtotime($endOfWeek->toDateString()));
+	//date('l', strtotime($endOfWeek->addDays(1)->toDateString()));
+
+	$dbblDatas = collect(dbblServerDataSet());
+	dd($dbblDatas->groupBy('customer_mobile'));
 	$filterPatients = [];
 	foreach ($dbblDatas as $key => $data) {
-		if((convertDateYmd($data['TXN_DATE']) < $saturday->toDateString()) || (convertDateYmd($data['TXN_DATE']) > $friday->toDateString()) )
+		if((convertDateYmd($data['TXN_DATE']) < $startOfWeek->toDateString()) || (convertDateYmd($data['TXN_DATE']) > $endOfWeek->toDateString()) )
 			continue;
 
 		$filterPatients[] = [
@@ -37,17 +45,25 @@ Route::get('datetime', function() {
 		];
 	}
 	return $filterPatients;
-	$currentWeekDays[] = $saturday->toDateString();
+	$currentWeekDays[] = $startOfWeek->toDateString();
 
 	for ($i=1; $i <= 6 ; $i++) { 
-		$plusDay = $saturday->addDays(1)->toDateString();
-		if($friday->toDateString() == $plusDay)
+		$plusDay = $startOfWeek->addDays(1)->toDateString();
+		if($endOfWeek->toDateString() == $plusDay)
 			$currentWeekDays[] = 'is friday booking';
 
 		$currentWeekDays[] =  $plusDay;
 	}
 	return $currentWeekDays;
 });
+
+function bookingForFirday() {
+
+}
+
+function bookingForSaturday() {
+
+}
 
 
 function existsDataSet() {
@@ -230,14 +246,14 @@ function dbblServerDataSet() {
 			'TRANSACTION_ID' => 600191084,
 			'TXN_DATE' => '10/16/2017',
 			'VALUE_DATE' => '10/16/2017',
-			'customer_mobile' => '1558352301',
+			'customer_mobile' => 'KAMAL1558352301',
 			'TXN_AMT' => 15000,
 		],
 		[
 			'TRANSACTION_ID' => 600191717,
 			'TXN_DATE' => '10/17/2017',
 			'VALUE_DATE' => '10/17/2017',
-			'customer_mobile' => '1558352301',
+			'customer_mobile' => 'KAMAL1558352301',
 			'TXN_AMT' => 15000,
 		],
 		[
@@ -377,7 +393,7 @@ function dbblServerDataSet() {
 			'TRANSACTION_ID' => 601102276,
 			'TXN_DATE' => '10/20/2017',
 			'VALUE_DATE' => '10/20/2017',
-			'customer_mobile' => '1558352301',
+			'customer_mobile' => 'KAMAL1558352301',
 			'TXN_AMT' => 15000,
 		],
 		[
@@ -412,7 +428,7 @@ function dbblServerDataSet() {
 			'TRANSACTION_ID' => 601102288,
 			'TXN_DATE' => '10/22/2017',
 			'VALUE_DATE' => '10/22/2017',
-			'customer_mobile' => '1558352301',
+			'customer_mobile' => 'KAMAL1558352301',
 			'TXN_AMT' => 15000,
 		],
 	];
